@@ -43,4 +43,7 @@ app.use((err, req, res, next) => {
     res.status(500).send(err.message);
 });
 
-app.listen(PORT, function () { console.log(`Server listening on port ${PORT}...`); });
+// app.listen(PORT, function () { console.log(`Server listening on port ${PORT}...`); });
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server listening on http://localhost:${PORT} (bound on 0.0.0.0)`);
+});

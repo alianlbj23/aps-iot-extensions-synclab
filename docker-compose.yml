@@ -1,0 +1,13 @@
+version: "3.9" 
+
+services:
+  app:
+    build: .
+    container_name: aps-iot-docker
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    user: "synlab"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

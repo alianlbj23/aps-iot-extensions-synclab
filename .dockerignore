@@ -1,0 +1,22 @@
+# 不要把本機相依、暫存檔、VCS 送進 build context
+node_modules
+**/node_modules
+npm-debug.log*
+yarn.lock
+pnpm-lock.yaml
+
+.git
+.gitignore
+.vscode
+.DS_Store
+*.log
+*.tmp
+
+# 前端/建置輸出（依專案調整）
+dist
+build4
+coverage
+
+# 環境檔（若要複製，請在 Dockerfile 另行 COPY）
+.env
+.env.*
