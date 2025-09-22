@@ -30,5 +30,5 @@ COPY . .
 RUN chown -R synlab:synlab /app 
 
 EXPOSE 3000
-# 依你的 package.json scripts，start 跑 server.js
+# package.json scripts，start 跑 server.js
 CMD ["npm", "run", "start"]

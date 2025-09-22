@@ -1,13 +1,14 @@
-version: "3.9" 
-
+version: "3.8"
 services:
-  app:
+  web:
     build: .
-    container_name: aps-iot-docker
+    image: img                # 也可以改成你的自訂名稱
+    container_name: synlab-web
     ports:
-      - "3000:3000"
-    volumes:
-      - .:/app
-    user: "synlab"
+      - "${PORT:-3000}:3000"  # 主機:容器；可用 .env 覆寫
+    environment:
+      - NODE_ENV=production
+    command: node index.js
+    restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"
