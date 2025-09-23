@@ -5,7 +5,7 @@ services:
     image: img                # 也可以改成你的自訂名稱
     container_name: synlab-web
     ports:
-      - "${PORT:-3000}:3000"  # 主機:容器；可用 .env 覆寫
+      - "${PORT:-3000}:3000"  # 主機:容器；可用.env 覆寫
     environment:
       - NODE_ENV=production
     command: node index.js
