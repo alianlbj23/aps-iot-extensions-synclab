@@ -1,6 +1,6 @@
 const express = require('express');
-const { getPublicToken } = require('./services/aps.js');
-const { getSensors, getChannels, getSamples } = require('./services/iot.mocked.js');
+const { getPublicToken } = require('../../services/aps.js');
+const { getSensors, getChannels, getSamples } = require('../../services/iot.mocked.js');
 const { PORT } = require('./config.js');
 
 let app = express();

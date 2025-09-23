@@ -1,7 +1,7 @@
 // 建立sdk管理器與authentication client 2-legged token
 const { SdkManagerBuilder } = require('@aps_sdk/autodesk-sdkmanager');
 const { AuthenticationClient, Scopes } = require('@aps_sdk/authentication');
-const { APS_CLIENT_ID, APS_CLIENT_SECRET } = require('../config.js');
+const { APS_CLIENT_ID, APS_CLIENT_SECRET } = require('../web/src/config.js');
 
 const sdkManager = SdkManagerBuilder.create().build();
 // 向aps authentication 申請token

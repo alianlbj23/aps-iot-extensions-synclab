@@ -1,0 +1,26 @@
+version: "3.8"
+services:
+  web:
+    build: . #  從當前目錄的 Dockerfile 建立映像檔
+    image: img                # 也可以改成你的自訂名稱
+    container_name: synlab-web
+    ports:
+      - "${PORT:-3000}:3000"  # 主機:容器；可用.env 覆寫
+    environment:
+      - NODE_ENV=production
+    command: node index.js
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  rtsp-sever:
+    image: bluenviron/mediamtx:latest           # 原 aler9/rtsp-simple-server
+    container_name: synlab-rtsp
+    ports:
+      - "8554:8554"   # RTSP
+      - "1935:1935"   # RTMP（可選）
+      - "8888:8888"   # HLS/LL-HLS + Web UI
+      # 如需 WebRTC 可再開 8189/udp 等，先省略
+    volumes:
+      - ./mediamtx.yml:/mediamtx.yml:ro         # 伺服器設定
+    restart: unless-stopped
