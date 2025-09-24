@@ -1,27 +1,42 @@
 services:
   web:
     build:
-      context: ./web/src          # ← 相對於 compose 檔
+      context: ./web/src          # 相對於 compose 檔
       dockerfile: Dockerfile
     image: aps-iot-web
     container_name: synlab_web
     volumes:
-      - synlab_web_data:/usr/src/app/data  # ← 用 /data的資料夾來存放資料，避免 container 資料覆蓋
+      - synlab_web_data:/usr/src/app/data  # 用 /data的資料夾來存放資料，避免 container 資料覆蓋
     ports:
       - "${PORT:-3000}:3000"
-    env_file:                   # ← 這裡用 env_file，而不是 environment: - .env
+    env_file:                   # 這裡用 env_file，而不是 environment: - .env
       - .env
-    restart: unless-stopped # ← 除非手動停止，否則異常停止會自動重啟 適合 server 類型的服務
+    restart: unless-stopped # 除非手動停止，否則異常停止會自動重啟 適合 server 類型的服務
 
   rtsp:
     image: bluenviron/mediamtx:latest
     container_name: synlab-rtsp
     ports:
-      - "8554:8554"
       - "1935:1935"
-      - "8888:8888"
+      - "8554:8554"
     # volumes:
       # - ./rtsp/mediamtx.yml:/mediamtx.yml:ro
+
+  yolo:
+    build: ./yolo
+    container_name: synlab_yolo
+    depends_on:
+      - rtsp
+    # 從 mediamtx 訂閱 RTSP：路徑名稱請替換 <path>
+    command: [
+      "python","yolo-rtsp-security-cam.py",
+      "--stream","rtsp://rtsp:8554/<path>",
+      "--yolo","person,dog",
+      "--model","yolov8n"
+    ]
+    # 如要把錄影檔放本機，掛個資料夾
+    volumes:
+      - ./recordings:/app/recordings
 
 volumes:
   synlab_web_data: {}
