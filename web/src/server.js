@@ -1,11 +1,17 @@
+// server.js
 const express = require('express');
-const { getPublicToken } = require('../../services/aps.js');
-const { getSensors, getChannels, getSamples } = require('../../services/iot.mocked.js');
+const { getPublicToken } = require('./services/aps.js');
+const { getSensors, getChannels, getSamples } = require('./services/iot.mocked.js');
+
+// 讀取設定：Port 30000 ; RTSP_HOST預設用docker service name 'rtsp'
 const { PORT } = require('./config.js');
+const RTSP_HOST = process.env.RTSP_HOST || 'rtsp';
+const RTSP_PORT = Number(process.env.RTSP_PORT || 8888);
 
 let app = express();
 app.use(express.static('public'));
 
+// Auth token for APS
 app.get('/auth/token', async function (req, res, next) {
     try {
         res.json(await getPublicToken());
@@ -42,6 +48,12 @@ app.use((err, req, res, next) => {
     console.error(err);
     res.status(500).send(err.message);
 });
+
+app.use('/stream', createProxyMiddleware({
+  target: `http://${RTSP_HOST}:${RTSP_PORT}`,
+  changeOrigin: true,
+  pathRewrite: { '^/stream': '' }
+}));
 
 // app.listen(PORT, function () { console.log(`Server listening on port ${PORT}...`); });
 app.listen(PORT, '0.0.0.0', () => {
