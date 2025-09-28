@@ -10,7 +10,9 @@ services:
     ports:
       - "${PORT:-3000}:3000"
     environment:
-      - TZ=Asia/Taipei
+      - APS_CLIENT_ID=="OY0NegZZfUJfD7EFdtu3AtQNMk7PWfr4"
+      - APS_CLIENT_SECRET="AQ6J2Z4KDxIrUgc3"
+      - APS_BUCKET="ncku_arch_synclab)2025"
     restart: unless-stopped # 除非手動停止，否則異常停止會自動重啟 適合 server 類型的服務
 
   rtsp:
