@@ -9,8 +9,8 @@ services:
       - synlab_web_data:/usr/src/app/data  # 用 /data的資料夾來存放資料，避免 container 資料覆蓋
     ports:
       - "${PORT:-3000}:3000"
-    environment:
-      - TZ=Asia/Taipei
+    env_file:                   # 這裡用 env_file，而不是 environment: - .env
+      - .env
     restart: unless-stopped # 除非手動停止，否則異常停止會自動重啟 適合 server 類型的服務
 
   rtsp:
@@ -21,11 +21,9 @@ services:
       - "8554:8554"
     # volumes:
       # - ./rtsp/mediamtx.yml:/mediamtx.yml:ro
-
-  yolocam1:
-    build: { context: ./yolo/src, dockerfile: Dockerfile }
-    depends_on:
-      - rtsp
+  yolo:
+    build: { context: ./yolo, dockerfile: Dockerfile }
+    gpus: all
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility,video

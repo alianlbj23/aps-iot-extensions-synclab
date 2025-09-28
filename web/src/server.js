@@ -1,10 +1,12 @@
 // server.js
 const express = require('express');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 const { getPublicToken } = require('./services/aps.js');
 const { getSensors, getChannels, getSamples } = require('./services/iot.mocked.js');
 
 // 讀取設定：Port 30000 ; RTSP_HOST預設用docker service name 'rtsp'
 const { PORT } = require('./config.js');
+
 const RTSP_HOST = process.env.RTSP_HOST || 'rtsp';
 const RTSP_PORT = Number(process.env.RTSP_PORT || 8888);
 
@@ -44,6 +46,18 @@ app.get('/iot/samples', async function (req, res, next) {
     }
 });
 
+// 只適用 HTTP 端點（HLS / http-flv / websocket-flv 等）
+app.use('/stream', createProxyMiddleware({
+  target: `http://${RTSP_HOST}:${RTSP_PORT}`,
+  changeOrigin: true,
+  pathRewrite: { '^/stream': '' },
+  onError(err, req, res) {
+    console.error('Proxy error:', err);
+    if (!res.headersSent) res.status(502).send('Upstream unavailable');
+  },
+}));
+
+// Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err);
     res.status(500).send(err.message);
