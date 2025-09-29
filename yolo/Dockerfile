@@ -6,6 +6,17 @@ FROM madtune/opencv-cuda:4.10.0
 #     PYTHONDONTWRITEBYTECODE=1 \
 #     VENV_PATH=/opt/venv
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgl1 \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender1 \
+    ffmpeg gstreamer1.0-tools gstreamer1.0-plugins-base \
+    gstreamer1.0-plugins-good gstreamer1.0-plugins-bad \
+ && rm -rf /var/lib/apt/lists/*
+
+ 
 ENV DEBIAN_FRONTEND=noninteractive \
     PIP_NO_CACHE_DIR=1 \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -24,5 +35,6 @@ WORKDIR /yolo/src/app
 COPY requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-ENTRYPOINT ["python3", "yolo-rtsp-security-cam.py"]
-CMD [ "executable" ]
+# ENTRYPOINT ["python3", "yolo-rtsp-security-cam.py"]
+# CMD [ "executable" ]
+CMD ["/bin/bash"]
