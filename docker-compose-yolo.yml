@@ -1,0 +1,13 @@
+services:
+  yolocam1:
+    image: cuda_opencv:0.0.0
+    # depends_on:
+    #   - rtsp
+    volumes:
+      - ./yolo/src/cctv/:/app/
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility,video
+    working_dir: /app
+    # 執行 python3 程式並傳遞 CLI 參數
+    command: ["python3", "yolo-rtsp-security-cam.py", "--stream", "rtsp://ip:port/stream-name", "--yolo", "person,dog,cat"]
